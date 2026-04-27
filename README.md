@@ -68,6 +68,12 @@ To create a high-performance lead generation and content platform that:
 - No traditional CMS (e.g., WordPress) required
 - Content is created, managed, and published within the system
 
+### Secure Content Administration
+- Access to the content management interface is restricted to authenticated users
+- Authorization controls ensure only approved users can create, modify, or publish content
+- Administrative endpoints are protected at the API layer
+- Enforces content governance without introducing external CMS dependencies
+
 ### Dynamic Content Distribution
 - New posts automatically surface on the homepage
 - Each post generates its own SEO-friendly page (`/blog/:slug`)
@@ -112,7 +118,7 @@ User → Form Submission → Cloudflare Worker
         → Google Sheets (Backup)  
         → Resend (Confirmation Email to User)  
         → Email + SMS Notification to Agent  
-        → Response returned to UI
+        → Response returned to UI  
 
 ---
 
@@ -124,7 +130,7 @@ User → Search / Listing Click → REMAX Platform → Continued browsing within
 
 ### Content Flow (Blog System)
 
-Admin → Secure Admin Panel → API → Data Store → Frontend Rendering → Homepage + Blog Pages
+Authenticated Admin → Secure Admin Panel → Protected API → Data Store → Frontend Rendering → Homepage + Blog Pages
 
 ---
 
