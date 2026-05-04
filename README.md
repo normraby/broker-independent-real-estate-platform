@@ -34,32 +34,76 @@ To create a high-performance lead generation and content platform that:
 - Tailwind CSS  
 - Deployed on Cloudflare Pages (edge delivery)
 
+Includes:
+- Interactive map experience (Google Maps integration)
+- Category-based exploration (Dining, Golf, Shopping, Parks)
+- Intent-aware search routing across map, MLS, and content
+
+---
+
+### Search Intelligence Layer (Routing Layer)
+- Lightweight intent parsing and routing system
+- Determines how user queries are handled
+
+Handles:
+- Keyword detection (e.g., “pool homes”, “golf”, “restaurants”)
+- Intent classification (content vs map vs MLS)
+- Dynamic routing:
+  - Map exploration (`/map?...`)
+  - MLS redirect (RE/MAX with polygon + filters)
+  - Internal content pages
+
+---
+
 ### Backend (Application Layer)
 - Cloudflare Workers (serverless API)
 - Handles:
   - Lead capture
   - Blog content retrieval
   - Data processing and routing
+  - Intent parsing and routing decisions
+  - MLS URL generation (polygon + filters)
+
+---
 
 ### Storage (Media Layer)
 - Cloudflare R2  
 - Cost-efficient media storage with no egress fees
+
+---
 
 ### Integrations (Data Layer)
 - HubSpot (CRM for direct leads)
 - Google Sheets (redundant lead backup)
 - Resend (transactional email notifications)
 - Google Analytics (traffic and behavior tracking)
+- Google Maps / Places API (nearby POIs: dining, shopping, golf, parks)
+
+---
 
 ### Deployment & CI/CD (Operations Layer)
 - GitHub used for version control and automated deployments
 - CI/CD pipelines trigger production builds on commit to main branch
 - Deployed to Cloudflare Pages for global edge delivery
 
+---
+
 ### Preview & Development Workflow
 - Manual preview builds generated using Cloudflare Wrangler
 - Enables testing in isolated environments before production release
 - Supports rapid iteration without impacting the live platform
+
+---
+
+### MLS Integration (External System)
+- RE/MAX platform used for:
+  - Property search
+  - Listing detail pages
+  - MLS-compliant data access
+
+- Searches are dynamically routed using:
+  - Polygon-based geographic queries
+  - Feature filters (e.g., pool homes)
 
 ---
 
@@ -111,6 +155,36 @@ This creates a hybrid model:
 
 ---
 
+## Advanced Capabilities
+
+### Intent-Based Search Routing
+- Interprets natural language queries (e.g., “pool homes in Middleton”)
+- Dynamically routes users to:
+  - Interactive map
+  - MLS listings (RE/MAX)
+  - Internal content pages
+
+### Interactive Map + Local Discovery
+- Google Maps integration with:
+  - Dining, shopping, golf, parks
+  - Google Places API data
+  - Curated + external POIs
+- Marker clustering and intelligent rendering
+- Context-aware filtering by area and category
+
+### Polygon-Based MLS Search
+- MLS queries are dynamically generated using:
+  - Geographic polygons
+  - Feature filters (e.g., pool, beds, price)
+- Ensures accurate, area-specific listing results
+
+### Hybrid Experience Model
+- Platform controls discovery and intent
+- MLS handles listing execution
+- Maintains compliance while preserving UX control
+
+---
+
 ## Data Flow
 
 ### Lead Capture (Direct Platform)
@@ -130,6 +204,17 @@ User → Search / Listing Click → REMAX Platform → Continued browsing within
 
 ---
 
+### Intelligent Listing Flow (Enhanced Routing)
+
+User → Search Query  
+     → Intent Parsing (Cloudflare Worker)  
+     → If listing intent:  
+         → Generate RE/MAX URL (polygon + filters)  
+         → Redirect to RE/MAX platform  
+     → Continue browsing within RE/MAX
+
+---
+
 ### Content Flow (Blog System)
 
 Authenticated Admin → Secure Admin Panel → Protected API → Data Store → Frontend Rendering → Homepage + Blog Pages
@@ -143,6 +228,7 @@ User Interaction → Frontend Events → Google Analytics
 - Tracks page views, traffic sources, and engagement
 - Captures key events (calls, form submissions, scheduling clicks)
 - Enables ongoing optimization of conversion performance
+- Tracks search intent and map interactions for UX optimization
 
 ---
 
