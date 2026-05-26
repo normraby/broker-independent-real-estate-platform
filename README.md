@@ -1,6 +1,6 @@
 # Broker-Independent Real Estate Platform
 
-![Architecture Diagram](https://github.com/normraby/broker-independent-real-estate-platform/blob/main/Architecture-Diagram.png)
+![Architecture Diagram](https://github.com/normraby/broker-independent-real-estate-platform/blob/main/Architecture-Diagram.png?v=2)
 
 ## Overview
 
