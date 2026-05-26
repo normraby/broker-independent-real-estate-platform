@@ -2,7 +2,6 @@
 
 ![Architecture Diagram](https://github.com/normraby/broker-independent-real-estate-platform/blob/main/Architecture-Diagram.png)
 
-Architecture-Diagram.png
 ## Overview
 
 This project is a custom-built, edge-native real estate platform designed to reduce reliance on brokerage-controlled systems while maintaining ownership of content, lead data, and SEO value.
