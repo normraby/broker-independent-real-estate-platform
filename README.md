@@ -1,6 +1,6 @@
 # Broker-Independent Real Estate Platform
 
-![Architecture Diagram](https://github.com/normraby/broker-independent-real-estate-platform/blob/main/Architecture-Diagram.png?v=2)
+![Architecture Diagram](https://github.com/normraby/broker-independent-real-estate-platform/blob/main/Architecture-Diagram.png?v=3)
 
 # Overview
 
@@ -128,10 +128,17 @@ Stores or supports:
 
 ## Integrations — Data and Communications Layer
 
+The platform leverages both Cloudflare and Google Cloud Platform services.
+
 - HubSpot — CRM for direct leads
 - Google Sheets — redundant lead backup
 - Resend — transactional confirmation emails
 - Google Analytics 4 — traffic and behavior tracking
+- Google Cloud Platform
+  - Maps JavaScript API
+  - Places API
+  - Geocoding API (where implemented)
+
 - Google Maps / Places API — maps, nearby POIs, dining, shopping, golf, parks
 - SMS/text gateway — real-time agent notifications where implemented
 - IDX Broker / Stellar MLS — listing data services
@@ -460,6 +467,31 @@ Analytics and event tracking support ongoing conversion optimization.
 ## Controlled Deployment Workflow
 
 CI/CD and preview environments reduce production risk and support rapid iteration.
+
+# Security
+
+- Cloudflare Turnstile bot protection (where implemented)
+- Edge rate limiting
+- HTTPS/TLS by default
+- Cloudflare edge security
+
+# Cloud Platforms
+
+## Cloudflare
+
+- Pages
+- Workers
+- R2
+- Edge Cache
+- CDN
+- Wrangler
+
+## Google Cloud Platform
+
+- Maps JavaScript API
+- Places API
+- Geocoding API
+- Location services
 
 # AI-Assisted Development
 
