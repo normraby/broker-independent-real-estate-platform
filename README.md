@@ -2,767 +2,511 @@
 
 ![Architecture Diagram](https://github.com/normraby/broker-independent-real-estate-platform/blob/main/Architecture-Diagram.png?v=2)
 
-## Overview
+# Overview
 
-This project is a custom-built, edge-native real estate platform designed to reduce reliance on brokerage-controlled systems while maintaining ownership of content, lead data, and SEO value.
+This project is a custom-built, edge-native real estate platform designed to reduce reliance on brokerage-controlled systems while maintaining ownership of content, user experience, lead data, analytics, and SEO value.
 
-Rather than attempting to replace all external systems, the platform separates concerns:
+The platform now supports native IDX listing search directly on JenniferRabySellsTheVillages.com. Users no longer need to leave the site for the primary listing search experience.
 
-- Content, performance, and direct lead capture are fully controlled
-- MLS listing data is accessed through established brokerage infrastructure where required
+Rather than replacing every external system, the platform separates concerns:
 
-This creates a balanced approach between independence and industry integration.
+- Content, SEO, user experience, performance, analytics, and direct lead capture are owned by the platform.
+- MLS listing data is accessed through IDX/Stellar MLS data services.
+- Rental and investment tools are owned by the platform.
+- External services are used selectively for CRM, email, analytics, maps, and data enrichment.
 
----
+This creates a balanced architecture: independent where ownership matters, integrated where trusted data is required.
 
-## Objective
+# Objective
 
-To create a high-performance lead generation and content platform that:
+To create a high-performance real estate lead generation, listing discovery, and investment analysis platform that:
 
-- Retains ownership of content and direct lead capture
+- Retains ownership of content, SEO, analytics, and lead capture
 - Operates independently from traditional CMS platforms
-- Delivers fast, edge-based performance
-- Integrates with MLS systems without surrendering platform control
+- Delivers fast edge-based performance
+- Provides native IDX listing search and listing detail pages
+- Integrates with MLS data services without surrendering platform control
+- Adds rental and investment tooling for higher-intent lead generation
 
----
+# Architecture Overview
 
-## Architecture Overview
+## Frontend — Delivery Layer
 
-### Frontend (Delivery Layer)
 - React + Vite
 - TypeScript
 - Tailwind CSS
-- Deployed on Cloudflare Pages (edge delivery)
+- Deployed on Cloudflare Pages for edge delivery
 
 Includes:
-- Interactive map experience (Google Maps integration)
-- Category-based exploration (Dining, Golf, Shopping, Parks)
-- Intent-aware search routing across map, MLS, and content
-- Investment analysis and rental income tooling
 
----
+- Native IDX listing search
+- Listing detail pages
+- Property photos and listing media
+- Advanced listing filters
+- Interactive map experience using Google Maps
+- Category-based exploration for dining, golf, shopping, parks, and local amenities
+- Intent-aware routing across listings, rentals, map, blog, and internal content
+- Rental Income Calculator
+- Rental and investment-related content
+- Blog and resource pages
+- Lead capture forms
+- Responsive and accessible UI
 
-### Search Intelligence Layer (Routing Layer)
-- Lightweight intent parsing and routing system
-- Determines how user queries are handled
+## Search Intelligence Layer — Routing Layer
 
-Handles:
-- Keyword detection (e.g., “pool homes”, “golf”, “restaurants”)
-- Intent classification (content vs map vs MLS)
-- Dynamic routing:
-  - Map exploration (`/map?...`)
-  - MLS redirect (RE/MAX with polygon + filters)
-  - Internal content pages
-
----
-
-### Backend (Application Layer)
-- Cloudflare Workers (serverless API)
+The platform uses lightweight, rule-based search routing.
 
 Handles:
+
+- Keyword detection
+- Intent classification
+- Listing intent
+- Rental intent
+- Map/local discovery intent
+- Blog/content intent
+- Route resolution
+- Auto-suggestions where implemented
+
+Search routing can direct users to:
+
+- Native IDX listing search
+- Listing detail pages
+- Rental tools and rental content
+- Interactive map pages
+- Blog and internal content pages
+
+This is intelligent routing, not a user-facing AI search product.
+
+## Backend — Application Layer
+
+Cloudflare Workers provide the serverless API layer.
+
+Handles:
+
 - Lead capture
-- Blog content retrieval
-- Data processing and routing
-- Intent parsing and routing decisions
-- MLS URL generation (polygon + filters)
-- Investment calculator processing
-- Auto-generated lead summaries
+- Form validation and processing
+- Blog/content API
+- IDX integration API
+- Rental data integration
+- Search routing and orchestration
+- Email and notification triggering
+- Webhook handling
+- Security controls and rate limiting
+- Auto-generated inquiry summaries where implemented
 
----
+## IDX Data Layer
 
-### Storage (Media Layer)
-- Cloudflare R2
-- Cost-efficient media storage with no egress fees
+IDX/Stellar MLS data services provide the listing data foundation.
 
----
+Supports:
 
-### Integrations (Data Layer)
-- HubSpot (CRM for direct leads)
-- Google Sheets (redundant lead backup)
-- Resend (transactional email notifications)
-- Google Analytics (traffic and behavior tracking)
-- Google Maps / Places API (nearby POIs: dining, shopping, golf, parks)
+- Live MLS listing data
+- Property search
+- Listing detail data
+- Photos and media
+- Search and filter data
+- Listing updates and status changes
+- Cacheable listing responses where implemented
 
----
+The IDX provider is a data layer, not the user-facing destination.
 
-### Deployment & CI/CD (Operations Layer)
-- GitHub used for version control and automated deployments
-- CI/CD pipelines trigger production builds on commit to main branch
-- Deployed to Cloudflare Pages for global edge delivery
+Users remain on JenniferRabySellsTheVillages.com for listing search and property detail views.
 
----
+## Storage and Edge Cache
 
-### Preview & Development Workflow
-- Manual preview builds generated using Cloudflare Wrangler
-- Enables testing in isolated environments before production release
-- Supports rapid iteration without impacting the live platform
+Cloudflare R2 and edge caching support platform media and performance.
 
----
+Stores or supports:
 
-### MLS Integration (External System)
-- RE/MAX platform used for:
-  - Property search
-  - Listing detail pages
-  - MLS-compliant data access
+- Images and media
+- Documents and assets
+- Blog images
+- Static assets
+- IDX response cache where implemented
+- Rental data cache where implemented
+- API response cache where implemented
 
-- Searches are dynamically routed using:
-  - Polygon-based geographic queries
-  - Feature filters (e.g., pool homes)
+## Integrations — Data and Communications Layer
 
----
+- HubSpot — CRM for direct leads
+- Google Sheets — redundant lead backup
+- Resend — transactional confirmation emails
+- Google Analytics 4 — traffic and behavior tracking
+- Google Maps / Places API — maps, nearby POIs, dining, shopping, golf, parks
+- SMS/text gateway — real-time agent notifications where implemented
+- IDX Broker / Stellar MLS — listing data services
+- AirDNA and/or rental data providers — rental market data where implemented
 
-## Key Capabilities
+## Deployment and CI/CD — Operations Layer
 
-### Built-In Content System (Anti-CMS Approach)
-- Custom blog functionality built directly into the platform
-- No traditional CMS (e.g., WordPress) required
-- Content is created, managed, and published within the system
+- GitHub for version control
+- GitHub Actions for CI/CD
+- Automated builds and validation on production workflow
+- Cloudflare Pages for production deployment
+- Cloudflare Workers for serverless API deployment
+- Wrangler for manual preview builds and deployment validation
+- Preview environments for isolated testing before production promotion
 
----
+# Key Capabilities
 
-### Secure Content Administration
-- Access to the content management interface is restricted to authenticated users
-- Authorization controls ensure only approved users can create, modify, or publish content
-- Administrative endpoints are protected at the API layer
-- Enforces content governance without introducing external CMS dependencies
+## Native IDX Listing Experience
 
----
+The platform now includes native on-site IDX search.
 
-### Dynamic Content Distribution
-- New posts automatically surface on the homepage
-- Each post generates its own SEO-friendly page (`/blog/:slug`)
-- No manual page creation required
+Supports:
 
----
+- Property search on JenniferRabySellsTheVillages.com
+- Listing detail pages
+- Listing photos and media
+- Search filters
+- Map/listing browsing
+- SEO-friendly property pages where supported
+- Lead capture remaining on the owned platform
 
-### Independent Lead Pipeline (Direct Channel)
-- Form submissions are processed at the edge via Cloudflare Workers
-- Leads are routed to HubSpot and backed up in Google Sheets
-- Direct inquiries remain fully owned by the business
+The prior external listing flow has been removed. Users are no longer routed to REMAX as the primary listing experience.
 
----
+## Built-In Content System
 
-### Automated Lead Response & Notification Workflow
-- Form submissions trigger serverless workflows at the edge
-- Confirmation emails are automatically sent to the requester
-- Internal notifications are delivered to the agent via:
-  - Email (detailed submission data)
-  - SMS/text for real-time alerting
-- Ensures rapid response times and reduces risk of missed inquiries
+The platform includes custom blog and resource functionality without relying on WordPress or a traditional CMS.
 
----
+Supports:
 
-### Villages Rental Income Calculator (Investment Tooling)
-- Custom-built Villages-specific rental income calculator
-- Supports:
-  - Short-Term Rental (STR) projections
-  - Long-Term Rental (LTR) projections
-  - Live income and cash flow calculations
+- Blog/resource content
+- SEO-friendly pages using `/blog/:slug`
+- Homepage content distribution
+- Internal content routing
+- Structured SEO metadata
+- Sitemap integration
 
-Includes:
+## Secure Content Administration
+
+Access to content administration is restricted to authenticated users.
+
+Administrative controls include:
+
+- Protected admin interface
+- Protected API endpoints
+- Authorization checks
+- Content governance without external CMS dependency
+
+## Independent Lead Pipeline
+
+Direct inquiries are processed through the owned platform.
+
+Lead capture flow:
+
+User → Form Submission → Cloudflare Worker  
+→ HubSpot CRM  
+→ Google Sheets Backup  
+→ Resend Confirmation Email  
+→ Email/SMS Notification to Agent  
+→ Response Returned to UI
+
+Direct inquiries remain owned by the business.
+
+## Rental Income Calculator
+
+The platform includes a Villages-specific rental income calculator.
+
+Supports:
+
+- Short-term rental projections
+- Long-term rental projections
+- Live income and cash flow calculations
 - Market default assumptions
-- Occupancy and rental rate modeling
+- Occupancy modeling
+- Rental rate modeling
 - STR seasonality analytics
 - Investment yield context
 - Market snapshot reference data
+- Lead capture with auto-filled investment summary
 
-Additional functionality:
-- Auto-generated investment summaries
-- Integrated lead capture workflows
-- SEO-integrated discoverability
-- Cross-platform navigation integration
+## Rental Cluster
 
----
-
-### Investment Lead Generation Workflow
-- Calculator submissions are processed through Cloudflare Workers
-- Investment inquiry summaries are automatically generated
-- Leads are routed to:
-  - HubSpot CRM
-  - Google Sheets backup
-  - Transactional email workflows
-
-Enables:
-- High-intent investor lead capture
-- Automated inquiry context generation
-- Conversion-focused investment workflows
-
----
-
-### SEO & Discoverability Integration
-- Rental calculator integrated into:
-  - Main navigation
-  - Resources pages
-  - Internal CTAs
-  - Footer links
-  - XML sitemap
-
-- Edge SEO metadata registered within the routing system
-
-Designed to capture:
-- “Villages rental income calculator”
-- STR investment searches
-- Retirement investment property searches
-
----
-
-### High-Performance Delivery
-- Edge deployment ensures fast load times and global performance
-- Optimized for responsiveness and user experience
-
----
-
-### MLS / Listing Integration Strategy
-- Property searches and listing views are routed to the official REMAX platform
-- Users access Jennifer Raby’s REMAX-powered search experience for full MLS coverage
-- Ensures compliance, accuracy, and complete listing data
-
-Listing-driven lead capture may occur within REMAX systems depending on the user journey, while direct platform inquiries remain fully controlled.
-
-This creates a hybrid model:
-- Independent where it creates value (content, SEO, direct leads)
-- Integrated where required (MLS data and brokerage systems)
-
----
-
-## Advanced Capabilities
-
-### Intent-Based Search Routing
-- Interprets natural language queries (e.g., “pool homes in Middleton”)
-- Dynamically routes users to:
-  - Interactive map
-  - MLS listings (RE/MAX)
-  - Internal content pages
-
----
-
-### Interactive Map + Local Discovery
-- Google Maps integration with:
-  - Dining, shopping, golf, parks
-  - Google Places API data
-  - Curated + external POIs
-- Marker clustering and intelligent rendering
-- Context-aware filtering by area and category
-
----
-
-### Polygon-Based MLS Search
-- MLS queries are dynamically generated using:
-  - Geographic polygons
-  - Feature filters (e.g., pool, beds, price)
-- Ensures accurate, area-specific listing results
-
----
-
-### Hybrid Experience Model
-- Platform controls discovery and intent
-- MLS handles listing execution
-- Investment tools remain platform-owned
-- Supports both property discovery and investment analysis workflows
-- Maintains compliance while preserving UX control
-
----
-
-### Real Estate Investment Analytics
-- Platform includes investment-oriented tooling in addition to search and discovery
+The platform includes rental and investment-related functionality beyond a single calculator.
 
 Supports:
-- Rental yield estimation
-- STR seasonality analysis
-- Investment-focused lead qualification
-- Interactive financial projections
 
-Extends the platform beyond listing discovery into investor engagement workflows.
+- Rental search pages where implemented
+- Rental market data
+- STR/LTR estimates
+- Investment lead capture
+- Rental provider integration where implemented
+- Rental content and SEO pages
+- Rental-specific conversion paths
 
----
+## Investment Lead Generation Workflow
 
-## Data Flow
+Calculator and rental-related submissions are processed through Cloudflare Workers.
 
-### Lead Capture (Direct Platform)
-
-User → Form Submission → Cloudflare Worker  
-→ HubSpot (CRM)  
-→ Google Sheets (Backup)  
-→ Resend (Confirmation Email to User)  
-→ Email + SMS Notification to Agent  
-→ Response returned to UI
-
----
-
-### Investment Calculator Flow
+Flow:
 
 User → Rental Income Calculator  
-→ Live Projection Engine  
+→ Projection Engine  
 → Investment Summary Generation  
 → Cloudflare Worker  
 → HubSpot CRM  
 → Google Sheets Backup  
-→ Email Confirmation + Notifications  
+→ Resend Confirmation  
+→ Agent Notification  
 → Response Returned to UI
 
----
+This supports high-intent investor lead capture and better inquiry context.
 
-### Listing Flow (MLS Integration)
+## SEO and Discoverability
 
-User → Search / Listing Click → REMAX Platform → Continued browsing within REMAX
-
----
-
-### Intelligent Listing Flow (Enhanced Routing)
-
-User → Search Query  
-→ Intent Parsing (Cloudflare Worker)  
-→ If listing intent:  
-→ Generate RE/MAX URL (polygon + filters)  
-→ Redirect to RE/MAX platform  
-→ Continue browsing within RE/MAX
-
----
-
-### Content Flow (Blog System)
-
-Authenticated Admin → Secure Admin Panel → Protected API → Data Store → Frontend Rendering → Homepage + Blog Pages
-
----
-
-### Analytics Flow
-
-User Interaction → Frontend Events → Google Analytics
-
-- Tracks page views, traffic sources, and engagement
-- Captures key events (calls, form submissions, scheduling clicks)
-- Enables ongoing optimization of conversion performance
-- Tracks search intent and map interactions for UX optimization
-- Tracks investment calculator engagement and lead conversion behavior
-
----
-
-### Deployment Flow
-
-Code Commit (GitHub) → CI/CD Pipeline → Cloudflare Pages (Production)
-
-Preview Changes → Wrangler → Preview Environment → Validation → Production Merge
-
----
-
-## Design Principles
-
-### Ownership Where It Matters
-The platform retains control over content, SEO, direct lead capture, and investment tooling rather than relying on brokerage-controlled systems.
-
----
-
-### Strategic Integration
-MLS infrastructure is used where necessary to ensure accuracy and compliance.
-
----
-
-### Simplicity Over Tool Sprawl
-Core functionality is built into the platform instead of relying on multiple third-party tools.
-
----
-
-### Performance First
-Edge-native delivery ensures fast load times and a smooth user experience.
-
----
-
-### Scalable by Design
-Serverless architecture removes infrastructure overhead and scales automatically.
-
----
-
-### Observability & Insight
-User behavior and engagement are tracked through analytics to continuously improve performance and conversion outcomes.
-
----
-
-### Controlled Deployment Workflow
-Automated CI/CD ensures stable production releases, while preview environments enable safe testing before deployment.
-
----
-
-## Why This Matters
-
-Traditional real estate platforms often:
-- Lock content into proprietary systems
-- Route leads through shared infrastructure
-- Limit control over SEO and performance
-
-This platform separates those concerns.
-
-It provides a model where:
-- Content and direct leads are owned
-- Performance is optimized independently
-- MLS data is accessed through trusted, compliant systems
-- Expands beyond listing discovery into investment-focused engagement
-
----
-
-## Note
-
-Source code is maintained in private repositories for security and intellectual property protection.
-
-This repository serves as a technical and architectural overview of the system design.
-
----
-
-## Author
-
-Norm Raby  
-Enterprise Architect | Platform Engineering
-
-Focused on building high-performance, edge-native systems that prioritize ownership, scalability, and long-term flexibility.
-
-This project is a custom-built, edge-native real estate platform designed to reduce reliance on brokerage-controlled systems while maintaining ownership of content, lead data, and SEO value.
-
-Rather than attempting to replace all external systems, the platform separates concerns:
-
-- Content, performance, and direct lead capture are fully controlled
-- MLS listing data is accessed through established brokerage infrastructure where required
-
-This creates a balanced approach between independence and industry integration.
-
----
-
-## Objective
-
-To create a high-performance lead generation and content platform that:
-
-- Retains ownership of content and direct lead capture
-- Operates independently from traditional CMS platforms
-- Delivers fast, edge-based performance
-- Integrates with MLS systems without surrendering platform control
-
----
-
-## Architecture Overview
-
-### Frontend (Delivery Layer)
-- React + Vite  
-- TypeScript  
-- Tailwind CSS  
-- Deployed on Cloudflare Pages (edge delivery)
+The platform is built to retain search value on the owned domain.
 
 Includes:
-- Interactive map experience (Google Maps integration)
-- Category-based exploration (Dining, Golf, Shopping, Parks)
-- Intent-aware search routing across map, MLS, and content
 
----
+- SEO-friendly internal pages
+- Blog/resource pages
+- IDX listing pages where supported
+- Rental calculator SEO integration
+- XML sitemap integration
+- Internal CTAs
+- Footer links
+- Navigation links
+- Structured metadata
+- Search-optimized routing
 
-### Search Intelligence Layer (Routing Layer)
-- Lightweight intent parsing and routing system
-- Determines how user queries are handled
+Designed to capture searches related to:
 
-Handles:
-- Keyword detection (e.g., “pool homes”, “golf”, “restaurants”)
-- Intent classification (content vs map vs MLS)
-- Dynamic routing:
-  - Map exploration (`/map?...`)
-  - MLS redirect (RE/MAX with polygon + filters)
-  - Internal content pages
-
----
-
-### Backend (Application Layer)
-- Cloudflare Workers (serverless API)
-- Handles:
-  - Lead capture
-  - Blog content retrieval
-  - Data processing and routing
-  - Intent parsing and routing decisions
-  - MLS URL generation (polygon + filters)
-
----
-
-### Storage (Media Layer)
-- Cloudflare R2  
-- Cost-efficient media storage with no egress fees
-
----
-
-### Integrations (Data Layer)
-- HubSpot (CRM for direct leads)
-- Google Sheets (redundant lead backup)
-- Resend (transactional email notifications)
-- Google Analytics (traffic and behavior tracking)
-- Google Maps / Places API (nearby POIs: dining, shopping, golf, parks)
-
----
-
-### Deployment & CI/CD (Operations Layer)
-- GitHub used for version control and automated deployments
-- CI/CD pipelines trigger production builds on commit to main branch
-- Deployed to Cloudflare Pages for global edge delivery
-
----
-
-### Preview & Development Workflow
-- Manual preview builds generated using Cloudflare Wrangler
-- Enables testing in isolated environments before production release
-- Supports rapid iteration without impacting the live platform
-
----
-
-### MLS Integration (External System)
-- RE/MAX platform used for:
-  - Property search
-  - Listing detail pages
-  - MLS-compliant data access
-
-- Searches are dynamically routed using:
-  - Polygon-based geographic queries
-  - Feature filters (e.g., pool homes)
-
----
-
-## Key Capabilities
-
-### Built-In Content System (Anti-CMS Approach)
-- Custom blog functionality built directly into the platform
-- No traditional CMS (e.g., WordPress) required
-- Content is created, managed, and published within the system
-
-### Secure Content Administration
-- Access to the content management interface is restricted to authenticated users
-- Authorization controls ensure only approved users can create, modify, or publish content
-- Administrative endpoints are protected at the API layer
-- Enforces content governance without introducing external CMS dependencies
-
-### Dynamic Content Distribution
-- New posts automatically surface on the homepage
-- Each post generates its own SEO-friendly page (`/blog/:slug`)
-- No manual page creation required
-
-### Independent Lead Pipeline (Direct Channel)
-- Form submissions are processed at the edge via Cloudflare Workers
-- Leads are routed to HubSpot and backed up in Google Sheets
-- Direct inquiries remain fully owned by the business
-
-### Automated Lead Response & Notification Workflow
-- Form submissions trigger serverless workflows at the edge
-- Confirmation emails are automatically sent to the requester
-- Internal notifications are delivered to the agent via:
-  - Email (detailed submission data)
-  - SMS/text for real-time alerting
-- Ensures rapid response times and reduces risk of missed inquiries
-
-### High-Performance Delivery
-- Edge deployment ensures fast load times and global performance
-- Optimized for responsiveness and user experience
-
-### MLS / Listing Integration Strategy
-- Property searches and listing views are routed to the official REMAX platform
-- Users access Jennifer Raby’s REMAX-powered search experience for full MLS coverage
-- Ensures compliance, accuracy, and complete listing data
-
-Listing-driven lead capture may occur within REMAX systems depending on the user journey, while direct platform inquiries remain fully controlled.
-
-This creates a hybrid model:
-- Independent where it creates value (content, SEO, direct leads)
-- Integrated where required (MLS data and brokerage systems)
-
----
-### Villages Rental Income Calculator (Investment Tooling)
-- Custom-built Villages-specific rental income calculator
-- Supports:
-  - Short-Term Rental (STR) projections
-  - Long-Term Rental (LTR) projections
-  - Live income and cash flow calculations
-
-Includes:
-- Market default assumptions
-- Occupancy and rental rate modeling
-- STR seasonality analytics
-- Investment yield context
-- Market snapshot reference data
-
-Additional functionality:
-- Auto-generated investment summaries
-- Integrated lead capture workflows
-- SEO-integrated discoverability
-- Cross-platform navigation integration
-
----
-
-### Investment Lead Generation Workflow
-- Calculator submissions are processed through Cloudflare Workers
-- Investment inquiry summaries are automatically generated
-- Leads are routed to:
-  - HubSpot CRM
-  - Google Sheets backup
-  - Transactional email workflows
-
-Enables:
-- High-intent investor lead capture
-- Automated inquiry context generation
-- Conversion-focused investment workflows
-
----
-
-### SEO & Discoverability Integration
-- Rental calculator integrated into:
-  - Main navigation
-  - Resources pages
-  - Internal CTAs
-  - Footer links
-  - XML sitemap
-
-- Edge SEO metadata registered within the routing system
-
-Designed to capture:
-- “Villages rental income calculator”
+- The Villages homes for sale
+- IDX property search
+- Villages rental income calculator
 - STR investment searches
 - Retirement investment property searches
+- Local community and lifestyle searches
 
---- 
-## Advanced Capabilities
+# Advanced Capabilities
 
-### Intent-Based Search Routing
-- Interprets natural language queries (e.g., “pool homes in Middleton”)
-- Dynamically routes users to:
-  - Interactive map
-  - MLS listings (RE/MAX)
-  - Internal content pages
+## Intelligent Search Routing
 
-### Interactive Map + Local Discovery
-- Google Maps integration with:
-  - Dining, shopping, golf, parks
-  - Google Places API data
-  - Curated + external POIs
-- Marker clustering and intelligent rendering
-- Context-aware filtering by area and category
+The platform interprets user intent through deterministic routing logic.
 
-### Polygon-Based MLS Search
-- MLS queries are dynamically generated using:
-  - Geographic polygons
-  - Feature filters (e.g., pool, beds, price)
-- Ensures accurate, area-specific listing results
+Examples:
 
-### Hybrid Experience Model
-- Platform controls discovery and intent
-- MLS handles listing execution
-- Maintains compliance while preserving UX control
+- “pool homes” → IDX listing search
+- “golf course homes” → IDX listing search
+- “restaurants near me” → map/local discovery
+- “rental income” → rental calculator or rental content
+- “Middleton” → listings, map, or content depending on context
 
-### Real Estate Investment Analytics
-- Platform includes investment-oriented tooling in addition to search and discovery
+## Interactive Map and Local Discovery
+
+Google Maps and Places API support local discovery.
+
+Includes:
+
+- Dining
+- Shopping
+- Golf
+- Parks
+- Local amenities
+- Map markers
+- Category filtering
+- Area-aware exploration
+
+## Real Estate Investment Analytics
+
+The platform extends beyond listing discovery into investment-focused engagement.
 
 Supports:
+
 - Rental yield estimation
 - STR seasonality analysis
 - Investment-focused lead qualification
 - Interactive financial projections
+- Investor-oriented inquiry summaries
 
-Extends the platform beyond listing discovery into investor engagement workflows.
+# Data Flows
 
----
-
-## Data Flow
-
-### Lead Capture (Direct Platform)
+## Lead Capture Flow
 
 User → Form Submission → Cloudflare Worker  
-        → HubSpot (CRM)  
-        → Google Sheets (Backup)  
-        → Resend (Confirmation Email to User)  
-        → Email + SMS Notification to Agent  
-        → Response returned to UI  
+→ HubSpot CRM  
+→ Google Sheets Backup  
+→ Resend Confirmation Email  
+→ Agent Email/SMS Notification  
+→ UI Response
 
----
-
-### Listing Flow (MLS Integration)
-
-User → Search / Listing Click → REMAX Platform → Continued browsing within REMAX
-
----
-
-### Intelligent Listing Flow (Enhanced Routing)
+## IDX Search Flow
 
 User → Search Query  
-     → Intent Parsing (Cloudflare Worker)  
-     → If listing intent:  
-         → Generate RE/MAX URL (polygon + filters)  
-         → Redirect to RE/MAX platform  
-     → Continue browsing within RE/MAX
+→ Search Routing Layer  
+→ Cloudflare Worker / IDX Integration  
+→ IDX/Stellar MLS Data  
+→ Cached Response Where Implemented  
+→ Native Listing Results Displayed On Site
 
----
+## Listing Detail Flow
 
-### Content Flow (Blog System)
+User → Listing Click  
+→ Listing Detail Route  
+→ IDX Detail API  
+→ Photos, Media, and Property Data  
+→ SEO-Friendly Listing Page  
+→ On-Site Lead Capture Options
 
-Authenticated Admin → Secure Admin Panel → Protected API → Data Store → Frontend Rendering → Homepage + Blog Pages
+## Rental Calculator Flow
 
----
+User → Rental Income Calculator  
+→ Live Projection Engine  
+→ Investment Summary  
+→ Cloudflare Worker  
+→ HubSpot CRM  
+→ Google Sheets Backup  
+→ Resend Confirmation  
+→ Agent Notification  
+→ UI Response
 
-### Analytics Flow
+## Rental Search / Rental Data Flow
 
-User Interaction → Frontend Events → Google Analytics
+User → Rental Search or Rental Content  
+→ Rental Routing Layer  
+→ Rental Data Provider/API Where Implemented  
+→ Results, Estimates, or Market Data Displayed On Site  
+→ Lead Capture
 
-- Tracks page views, traffic sources, and engagement
-- Captures key events (calls, form submissions, scheduling clicks)
-- Enables ongoing optimization of conversion performance
-- Tracks search intent and map interactions for UX optimization
+## Content Flow
 
----
+Authenticated Admin → Secure Admin Panel  
+→ Protected API  
+→ Data Store  
+→ Frontend Rendering  
+→ Homepage, Blog, and Resource Pages
 
-### Deployment Flow
+## Analytics Flow
 
-Code Commit (GitHub) → CI/CD Pipeline → Cloudflare Pages (Production)
+User Interaction → Frontend Events → Google Analytics 4
 
-Preview Changes → Wrangler → Preview Environment → Validation → Production Merge
+Tracks:
 
----
+- Page views
+- Traffic sources
+- Search behavior
+- Map interactions
+- Form submissions
+- Calls and contact actions
+- Rental calculator engagement
+- Listing engagement
+- Conversion behavior
 
-## Design Principles
+## Deployment Flow
 
-### Ownership Where It Matters
-The platform retains control over content, SEO, and direct lead capture rather than relying on brokerage-controlled systems.
+Code Commit → GitHub → GitHub Actions  
+→ Automated Tests / Build Validation  
+→ Cloudflare Pages Production Deployment  
+→ Cloudflare Edge Delivery
 
-### Strategic Integration
-MLS infrastructure is used where necessary to ensure accuracy and compliance.
+Preview Flow:
 
-### Simplicity Over Tool Sprawl
-Core functionality is built into the platform instead of relying on multiple third-party tools.
+Developer Changes → Wrangler Build/Deploy  
+→ Preview Environment  
+→ Test and Validate  
+→ Merge to Main  
+→ Production Deploy
 
-### Performance First
-Edge-native delivery ensures fast load times and a smooth user experience.
+# Design Principles
 
-### Scalable by Design
-Serverless architecture removes infrastructure overhead and scales automatically.
+## Ownership Where It Matters
 
-### Observability & Insight
-User behavior and engagement are tracked through analytics to continuously improve performance and conversion outcomes.
+The platform retains control over:
 
-### Controlled Deployment Workflow
-Automated CI/CD ensures stable production releases, while preview environments enable safe testing before deployment.
+- User experience
+- Content
+- SEO
+- Analytics
+- Direct lead capture
+- Rental tools
+- Investment workflows
+- Branding
 
----
+## Strategic Integration
 
-## Why This Matters
+External systems are used where they provide authoritative data or operational leverage.
+
+Examples:
+
+- IDX/Stellar MLS for MLS listing data
+- Google Maps/Places for location discovery
+- HubSpot for CRM
+- Resend for transactional email
+- GA4 for analytics
+
+## No External Listing Destination Dependency
+
+The platform no longer depends on an external REMAX user journey for the primary listing experience.
+
+Listing data is integrated as a data service while the site owns the UX.
+
+## Simplicity Over Tool Sprawl
+
+Core functionality is built directly into the platform instead of relying on multiple disconnected third-party tools.
+
+## Performance First
+
+Cloudflare edge delivery provides fast load times, global performance, and low infrastructure overhead.
+
+## Scalable by Design
+
+Serverless architecture allows the platform to scale without traditional server management.
+
+## Observability and Insight
+
+Analytics and event tracking support ongoing conversion optimization.
+
+## Controlled Deployment Workflow
+
+CI/CD and preview environments reduce production risk and support rapid iteration.
+
+# AI-Assisted Development
+
+Claude and Cursor were used as AI-assisted development tools for:
+
+- Architecture design
+- Code generation
+- Debugging
+- Refactoring
+- Documentation
+- SEO content support
+- Deployment troubleshooting
+- IDX implementation support
+- Rental calculator implementation support
+
+The platform should be described as AI-assisted in development, not AI-powered from a user-experience perspective unless future user-facing AI features are added.
+
+# Why This Matters
 
 Traditional real estate platforms often:
+
 - Lock content into proprietary systems
 - Route leads through shared infrastructure
-- Limit control over SEO and performance
+- Limit control over SEO
+- Limit control over analytics
+- Restrict platform flexibility
+- Create dependency on brokerage-controlled UX
 
 This platform separates those concerns.
 
 It provides a model where:
-- Content and direct leads are owned
+
+- Content is owned
+- Direct leads are owned
+- Listing search runs on the owned site
+- MLS data is accessed through IDX data services
 - Performance is optimized independently
-- MLS data is accessed through trusted, compliant systems
+- Rental and investment tools create additional lead pathways
+- The business retains control over UX, SEO, analytics, and conversion strategy
 
----
-
-## Note
+# Note
 
 Source code is maintained in private repositories for security and intellectual property protection.
 
 This repository serves as a technical and architectural overview of the system design.
 
----
-
-## Author
+# Author
 
 Norm Raby  
 Enterprise Architect | Platform Engineering
